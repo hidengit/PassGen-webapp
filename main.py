@@ -1,6 +1,32 @@
 import streamlit as st
+from generator import generate_password
 
 st.title("Password Generator")
+
+# Creer des colonnes pour l'affichage du bouton et du mot de passe
+col1, col2 = st.columns([4, 1])
+
+# Placeholder pour le mot de passe
+with col1:
+    password_placeholder = st.empty()
+
+# Bouton pour générer le mot de passe
+with col2:
+    # Ajout d'un style pour modifier la taille du bouton
+    with st.container():
+        st.markdown(
+            """
+            <style>
+            .stButton > button {
+                width: 100px;
+                height: 40px;
+                font-size: 24px;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        st.button("♻️", on_click=lambda: password_placeholder.empty())
 
 # Initialiser les variables de session si elles n'existent pas
 if "password_length" not in st.session_state:
@@ -33,3 +59,16 @@ with col3:
     include_lowercase = st.checkbox("Lowercase", value=True)
     include_numbers = st.checkbox("Numbers", value=True)
     include_symbols = st.checkbox("Symbols", value=True)
+
+# Générer le mot de passe
+password = generate_password(
+    length=st.session_state.password_length,
+    include_uppercase=include_uppercase,
+    include_lowercase=include_lowercase,
+    include_numbers=include_numbers,
+    include_symbols=include_symbols
+)
+
+# Afficher le mot de passe généré
+with password_placeholder:
+    st.code(password, language='plaintext')
